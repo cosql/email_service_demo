@@ -16,23 +16,23 @@ recipient, email subject, etc.
 A wrapper class EmailClient delivers emails, which tries to use
 mailgun first and falls back to mandrill upon failures.
 
-*Users have to first log in using email address, (gmail can be used as
+* Users have to first log in using email address, (gmail can be used as
 login credential).
-*The top 10 most recent emails are shown on the homepage after
+* The top 10 most recent emails are shown on the homepage after
 login, memcache is used as a lookaside cache to cache these recent
 emails for each user.
-*Users can search emails by their subjects. (only exact match is
+* Users can search emails by their subjects. (only exact match is
 supported due to the limitation of appengine ndb api)
-*Users can click 'compose' to write a new email to send or save for
+* Users can click 'compose' to write a new email to send or save for
 later use.
-*And users can use 'mail box' link to retrieve all the historical
+* And users can use 'mail box' link to retrieve all the historical
 emails, and are able to delete a selected email at a time.
-*Finally, users can also use 'drafts' link to see all the unsent emails
+* Finally, users can also use 'drafts' link to see all the unsent emails
 and then edit/send one of them.
 
 [demo site] (http://emailservicedemo.appspot.com)
 
-##Installation/Deployment
+##How to Deploy
 * Clone this repository
 * Apply for mailgun and mandrill api keys and put them in config.py
 * Launch the project using GoogleAppEngineLauncher with a preferred
@@ -45,7 +45,7 @@ Different actions (compose, view all message, view drafts) are handled by corres
 handlers are inherited from webapp2.RequestHandler class.
 Cookies are used when users want to edit an existing email.
 
-###Implement Choices
+###Implement Details
 ####Front-end
   * All the templates in template directory are manually generated.
 
