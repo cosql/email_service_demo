@@ -26,6 +26,7 @@ class EmailClient:
         return status
 
 class EmailRequest:
+    '''A simple email request abstraction'''
     def __init__(self,
                  recipient,
                  sender_email="",
