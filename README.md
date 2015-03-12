@@ -11,9 +11,9 @@ Create a service that accepts the necessary information and sends emails. It sho
 A service running on google engine implemented using webapp2 framework.
 The service uses mailgun as default mailing service provider and mandrill as
 secondary backup.
-EmailRequest class encapsulates required email information such as
+**EmailRequest** class encapsulates required email information such as
 recipient, email subject, etc.
-A wrapper class EmailClient delivers emails, which tries to use
+A wrapper class **EmailClient** delivers emails, which tries to use
 mailgun first and falls back to mandrill upon failures.
 
 * Users have to first log in using email address, (gmail can be used as
