@@ -16,8 +16,9 @@ recipient, email subject, etc.
 A wrapper class EmailClient delivers emails, which tries to use
 mailgun first and falls back to mandrill upon failures.
 
-Users have to first log in using email address.
-And the top 10 most recent emails are shown on the homepage after
+Users have to first log in using email address, (gmail can be used as
+login credential).
+The top 10 most recent emails are shown on the homepage after
 login, memcache is used as a lookaside cache to cache these recent
 emails for each user.
 Users can search emails by their subjects. (only exact match is
