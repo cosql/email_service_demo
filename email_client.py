@@ -46,7 +46,7 @@ class EmailRequest:
         self.text = text
 
     def validate(self):
-        # subject can not be longer than 500 due GAE limitation
+        # subject can not be longer than 500 due to GAE limitation
         if (len(self.subject) >= 500):
             return False, "subject too long"
         if not EMAIL_REGEX.match(self.recipient):
