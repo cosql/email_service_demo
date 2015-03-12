@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Compose your new email</title>
+</head>
+
+<body>
+[<a href="/"><b>Back</b></a>]
+
+<h1>Compose your new email</h1>
+<hr>
+    <form method=post action="/compose">
+      From (Your Email Address):<br><textarea name=from rows=1 cols=30
+        placeholder= {{ sender_email }}></textarea><br>
+      Author (Your Name):<br><textarea name=sender rows=1 cols=30
+        placeholder="Email Service"></textarea><br>
+      To (Email Address):<br><textarea name=recipient rows=1
+        cols=30>{{ email_context.recipient }}</textarea><br>
+      Subject:<br><textarea name=subject rows=1 cols=60>{{ email_context.subject }}</textarea><br>
+      Text:<br><textarea name=text rows=3 cols=60>{{ email_context.text }}</textarea><br>
+      <br>
+       <input type="submit" name="action" value="send"></input>
+       <input type="submit" name="action" value="save"></input>
+    </form>
+<address></address>
+</body> </html>

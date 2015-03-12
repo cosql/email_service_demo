@@ -1,0 +1,61 @@
+<html>
+  <body>
+   Hello, {% if user %}
+    {{ user.nickname }}!
+    [<a href="{{ logout }}"><b>sign out</b></a>]
+    {% else %}
+    World!
+    [<a href="{{ login }}"><b>sign in</b></a>]
+    {% endif %}
+    [<a href="compose"><b>compose</b></a>]
+    [<a href="outbox"><b>mail box</b></a>]
+    [<a href="drafts"><b>drafts</b></a>]
+
+    <form action="/outbox" method=get>
+      <br><br><textarea name=keyword rows=1 cols=60
+      height:25px></textarea>
+      <br><input
+      type=submit value="Search Subject" style="float" height:25px>
+    </form>
+
+    <h2>Your Top 10 Most Recent Messages</h2>
+    <table border="1" style="width:60%">
+      <tr>
+        <td>Subject</td>
+        <td>Text</td>
+        <td>Recipient</td>
+        <td>Time</td>
+        <td>Status</td>
+      </tr>
+        {% for email in emails %}
+        <tr>
+          <td>{{ email.subject|escape }}</td>
+          <td>{{ email.text|escape }}</td>
+          {% if email.recipient %}
+            <td><code>{{ email.recipient }}</code></td>
+          {% else %}
+            <td><i>anonymous</i></td>
+          {% endif %}
+          <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
+           {% if email.status %}
+            <td><i>sent</i></td>
+          {% else %}
+            <td><i>unsent</i></td>
+          {% endif %}
+      </tr>
+      {% endfor %}
+    </table>
+   
+    <!-- <hr> -->
+    <!-- <form action="/send" method=post> -->
+    <!--   From (Your Email Address):<br><textarea name=from rows=1 cols=30 -->
+    <!--   placeholder= {{ user.email }}></textarea><br> -->
+    <!--   Author (Your Name):<br><textarea name=sender rows=1 cols=30 -->
+    <!--   placeholder="Email Service"></textarea><br> -->
+    <!--   To (Email Address):<br><textarea name=recipient rows=1 cols=30></textarea><br> -->
+    <!--    Subject:<br><textarea name=subject rows=1 cols=60></textarea><br> -->
+    <!--   Text:<br><textarea name=text rows=3 cols=60></textarea><br> -->
+    <!--   <br><input type=submit value="Send"> -->
+    <!-- </form> -->
+  </body>
+</html>
