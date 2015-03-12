@@ -8,6 +8,7 @@ Create a service that accepts the necessary information and sends emails. It sho
 
 
 ###The solution:
+Implemented a mail service to let user send/save/view/delete all their emails.
 A service running on google engine implemented using webapp2 framework.
 The service uses mailgun as default mailing service provider and mandrill as
 secondary backup.
