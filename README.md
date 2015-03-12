@@ -60,7 +60,7 @@ Cookies are used when users want to edit an existing email.
 
   * ndb. It is used as persistent storage for all the emails.
 
-###Improvements(If spending additional time on the project)
+### Further Improvements
   * Due the upper limitation for mailgun and mandrill free accounts,
   users may be only allowed to send a certain amount of emails per day.
   * Add more features that people normally use, such as attachment,
