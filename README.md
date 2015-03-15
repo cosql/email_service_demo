@@ -68,3 +68,6 @@ Cookies are used when users want to edit an existing email.
   cc, bcc, and calendar request.
   * Implement full text search for emails.
   * More user-friendly UI.
+
+## Run Tests
+   * python unit_test.py
