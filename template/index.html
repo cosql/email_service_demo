@@ -1,4 +1,7 @@
 <html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/static/style.css" />
+  </head>
   <body>
    Hello, {% if user %}
     {{ user.nickname }}!
@@ -20,6 +23,7 @@
 
     <h2>Your Top 10 Most Recent Messages</h2>
     <table border="1" style="width:60%">
+      <thead>
       <tr>
         <td>Subject</td>
         <td>Text</td>
@@ -27,6 +31,7 @@
         <td>Time</td>
         <td>Status</td>
       </tr>
+      </thead>
         {% for email in emails %}
         <tr>
           <td>{{ email.subject|escape }}</td>
@@ -45,7 +50,7 @@
       </tr>
       {% endfor %}
     </table>
-   
+
     <!-- <hr> -->
     <!-- <form action="/send" method=post> -->
     <!--   From (Your Email Address):<br><textarea name=from rows=1 cols=30 -->

@@ -1,0 +1,66 @@
+body {
+     background: #fafafa url(http://jackrugile.com/images/misc/noise-diagonal.png);
+     color: #444;
+     font: 100%/30px 'Helvetica Neue', helvetica, arial, sans-serif;
+}
+
+table {
+  font-family: "Helvetica Neue", Helvetica, sans-serif
+  background: #f5f5f5;
+  border-collapse: separate;
+  box-shadow: inset 0 1px 0 #fff;
+  text-align: right;
+  width: 800px;
+}
+
+caption {
+  text-align: left;
+  color: silver;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 5px;
+}
+
+thead {
+  background: SteelBlue;
+  color: white;
+}
+
+th,
+td {
+  padding: 5px 10px;
+}
+
+tbody tr:nth-child(even) {
+  background: WhiteSmoke;
+}
+
+tbody tr td:nth-child(2) {
+  text-align:center;
+}
+
+tbody tr td:nth-child(3),
+tbody tr td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+tfoot {
+  background: SeaGreen;
+  color: white;
+  text-align: right;
+}
+
+tfoot tr th:last-child {
+  font-family: monospace;
+}
+
+tbody:hover td {
+            color: transparent;
+            text-shadow: 0 0 3px #aaa;
+}
+
+tbody:hover tr:hover td {
+            color: #444;
+            text-shadow: 0 1px 0 #fff;
+}
