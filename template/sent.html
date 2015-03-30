@@ -7,28 +7,28 @@
 <body>
 <h1>>Your Sent Messages</h1>
 
-
-
 <hr>
  <table border="1" style="width:60%">
+   <thead>
       <tr>
         <td>Subject</td>
         <td>Text</td>
         <td>Recipient</td>
         <td>Time</td>
       </tr>
-        {% for email in emails %}
-        <tr>
-          <td>{{ email.subject|escape }}</td>
-          <td>{{ email.text|escape }}</td>
-          {% if email.recipient %}
-            <td><code>{{ email.recipient }}</code></td>
-          {% else %}
-            <td><i>anonymous</i></td>
-          {% endif %}
-          <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
-      </tr>
-      {% endfor %}
-    </table>
-<address></address>
+   </thead>
+   {% for email in emails %}
+   <tr>
+     <td>{{ email.subject|escape }}</td>
+     <td>{{ email.text|escape }}</td>
+     {% if email.recipient %}
+     <td><code>{{ email.recipient }}</code></td>
+     {% else %}
+     <td><i>anonymous</i></td>
+     {% endif %}
+     <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
+   </tr>
+   {% endfor %}
+ </table>
+ <address></address>
 </body> </html>

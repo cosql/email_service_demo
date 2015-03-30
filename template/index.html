@@ -3,64 +3,74 @@
     <link type="text/css" rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-   Hello, {% if user %}
-    {{ user.nickname }}!
-    [<a href="{{ logout }}"><b>sign out</b></a>]
-    {% else %}
-    World!
-    [<a href="{{ login }}"><b>sign in</b></a>]
-    {% endif %}
-    [<a href="compose"><b>compose</b></a>]
-    [<a href="outbox"><b>mail box</b></a>]
-    [<a href="drafts"><b>drafts</b></a>]
-
-    <form action="/outbox" method=get>
-      <br><br><textarea name=keyword rows=1 cols=60
-      height:25px></textarea>
-      <br><input
-      type=submit value="Search Subject" style="float" height:25px>
-    </form>
-
-    <h2>Your Top 10 Most Recent Messages</h2>
-    <table border="1" style="width:60%">
-      <thead>
-      <tr>
-        <td>Subject</td>
-        <td>Text</td>
-        <td>Recipient</td>
-        <td>Time</td>
-        <td>Status</td>
-      </tr>
-      </thead>
-        {% for email in emails %}
-        <tr>
-          <td>{{ email.subject|escape }}</td>
-          <td>{{ email.text|escape }}</td>
-          {% if email.recipient %}
+    <div id="header">
+      Hello, {% if user %}
+      {{ user.nickname }}!
+      [<a href="{{ logout }}"><b>sign out</b></a>]
+      {% else %}
+      World!
+      [<a href="{{ login }}"><b>sign in</b></a>]
+      {% endif %}
+    </div>
+    <div id="main-wrap">
+      <div id="sidebar">
+          <a href="compose" class="action-button shadow animate blue">Compose</a>
+        <br><br>
+          <a href="outbox" class="action-button shadow animate yellow">Mail Box</a>
+        <br><br>
+          <a href="drafts" class="action-button shadow animate red">Drafts</a>
+      </div>
+      <div id="content-wrap">
+        <form action="/outbox" method=get>
+          <input type="text" name=keyword size=65
+                            style="height:30px;font-size:14pt;"">
+          <br>
+          <input type=submit value="Search Subject"
+                 class="action-button shadow animate green">
+        </form>
+        <br>
+        <table border="1" style="width:60%">
+        <caption>Your Top 10 Most Recent Messages</caption>
+          <thead>
+            <tr>
+              <td>Subject</td>
+              <td>Text</td>
+              <td>Recipient</td>
+              <td>Time</td>
+              <td>Status</td>
+            </tr>
+          </thead>
+          {% for email in emails %}
+          <tr>
+            <td>{{ email.subject|escape }}</td>
+            <td>{{ email.text|escape }}</td>
+            {% if email.recipient %}
             <td><code>{{ email.recipient }}</code></td>
-          {% else %}
+            {% else %}
             <td><i>anonymous</i></td>
-          {% endif %}
-          <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
-           {% if email.status %}
+            {% endif %}
+            <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
+            {% if email.status %}
             <td><i>sent</i></td>
-          {% else %}
+            {% else %}
             <td><i>unsent</i></td>
-          {% endif %}
-      </tr>
-      {% endfor %}
-    </table>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </table>
+        <!-- <hr> -->
+        <!-- <form action="/send" method=post> -->
+        <!--   From (Your Email Address):<br><textarea name=from rows=1 cols=30 -->
+        <!--   placeholder= {{ user.email }}></textarea><br> -->
+        <!--   Author (Your Name):<br><textarea name=sender rows=1 cols=30 -->
+        <!--   placeholder="Email Service"></textarea><br> -->
+        <!--   To (Email Address):<br><textarea name=recipient rows=1 cols=30></textarea><br> -->
+        <!--    Subject:<br><textarea name=subject rows=1 cols=60></textarea><br> -->
+        <!--   Text:<br><textarea name=text rows=3 cols=60></textarea><br> -->
+        <!--   <br><input type=submit value="Send"> -->
+        <!-- </form> -->
 
-    <!-- <hr> -->
-    <!-- <form action="/send" method=post> -->
-    <!--   From (Your Email Address):<br><textarea name=from rows=1 cols=30 -->
-    <!--   placeholder= {{ user.email }}></textarea><br> -->
-    <!--   Author (Your Name):<br><textarea name=sender rows=1 cols=30 -->
-    <!--   placeholder="Email Service"></textarea><br> -->
-    <!--   To (Email Address):<br><textarea name=recipient rows=1 cols=30></textarea><br> -->
-    <!--    Subject:<br><textarea name=subject rows=1 cols=60></textarea><br> -->
-    <!--   Text:<br><textarea name=text rows=3 cols=60></textarea><br> -->
-    <!--   <br><input type=submit value="Send"> -->
-    <!-- </form> -->
+      </div>
+    </div>
   </body>
 </html>

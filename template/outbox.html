@@ -11,13 +11,16 @@
 <hr>
 <form action="/delete" method="post">
  <table border="1" style="width:60%">
+   <thead>
       <tr>
         <td>Subject</td>
         <td>Text</td>
         <td>Recipient</td>
         <td>Time</td>
         <td>Status</td>
+                <td></td>
       </tr>
+   </thead>
         {% for email in emails %}
         <tr>
           <td>{{ email.subject|escape }}</td>
@@ -39,7 +42,7 @@
       </tr>
       {% endfor %}
     </table>
-<input type="submit" name="delete message" value="delete message"/>
+<input type="submit" name="delete message" value="delete message" class="action-button shadow animate green"/>
 </form>
 <address></address>
 </body> </html>

@@ -19,8 +19,13 @@
       Subject:<br><textarea name=subject rows=1 cols=60>{{ email_context.subject }}</textarea><br>
       Text:<br><textarea name=text rows=3 cols=60>{{ email_context.text }}</textarea><br>
       <br>
-       <input type="submit" name="action" value="send"></input>
-       <input type="submit" name="action" value="save"></input>
+      <div style="text-align: center"> 
+       <input type="submit" class="action-button shadow animate red"
+              name="action" value="send" style="margin-right: 30px"></input>
+       <div class="divider"/>
+       <input type="submit"  class="action-button shadow animate blue"
+              name="action" value="save"></input>
+     </div>
     </form>
 <address></address>
 </body> </html>

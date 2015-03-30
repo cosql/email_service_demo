@@ -1,66 +1,136 @@
 body {
-     background: #fafafa url(http://jackrugile.com/images/misc/noise-diagonal.png);
-     color: #444;
-     font: 100%/30px 'Helvetica Neue', helvetica, arial, sans-serif;
+    background: #fafafa url(http://jackrugile.com/images/misc/noise-diagonal.png);
+    color: #444;
+    font: 100%/30px 'Helvetica Neue', helvetica, arial, sans-serif;
 }
 
 table {
-  font-family: "Helvetica Neue", Helvetica, sans-serif
-  background: #f5f5f5;
-  border-collapse: separate;
-  box-shadow: inset 0 1px 0 #fff;
-  text-align: right;
-  width: 800px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif
+    background: #f5f5f5;
+    border-collapse: separate;
+    box-shadow: inset 0 1px 0 #fff;
+    text-align: center;
+    width: 800px;
 }
 
 caption {
-  text-align: left;
-  color: silver;
-  font-weight: bold;
-  text-transform: uppercase;
-  padding: 5px;
+    text-align: left;
+    color: Black;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 5px;
 }
 
 thead {
-  background: SteelBlue;
-  color: white;
+    background: SteelBlue;
+    color: white;
 }
 
 th,
 td {
-  padding: 5px 10px;
+    padding: 5px 10px;
 }
 
 tbody tr:nth-child(even) {
-  background: WhiteSmoke;
+    background: WhiteSmoke;
 }
 
 tbody tr td:nth-child(2) {
-  text-align:center;
+    text-align:center;
 }
 
 tbody tr td:nth-child(3),
 tbody tr td:nth-child(4) {
-  text-align: right;
-  font-family: monospace;
+    text-align: center;
+    font-family: monospace;
 }
 
 tfoot {
-  background: SeaGreen;
-  color: white;
-  text-align: right;
+    background: SeaGreen;
+    color: white;
+    text-align: right;
 }
 
 tfoot tr th:last-child {
-  font-family: monospace;
+    font-family: monospace;
 }
 
-tbody:hover td {
-            color: transparent;
-            text-shadow: 0 0 3px #aaa;
+.animate
+{
+    transition: all 0.1s;
+    -webkit-transition: all 0.1s;
 }
 
-tbody:hover tr:hover td {
-            color: #444;
-            text-shadow: 0 1px 0 #fff;
+.action-button
+{
+    text-align: center;
+    position: relative;
+    padding: 5px 20px;
+    margin: 0px 5px 5px 0px;
+    width: 69px;
+    float: left;
+    border-radius: 5px;
+    font-family: 'Helvetica', cursive;
+    font-size: 16px;
+    color: #FFF;
+    text-decoration: none;
+}
+
+.blue
+{
+    background-color: #3498DB;
+    border-bottom: 5px solid #2980B9;
+    text-shadow: 0px -2px #2980B9;
+}
+
+.red
+{
+    background-color: #E74C3C;
+    border-bottom: 5px solid #BD3E31;
+    text-shadow: 0px -2px #BD3E31;
+}
+
+.green
+{
+    background-color: #82BF56;
+    border-bottom: 5px solid #669644;
+    text-shadow: 0px -2px #669644;
+    width: 169px;
+}
+
+.yellow
+{
+    background-color: #F2CF66;
+    border-bottom: 5px solid #D1B358;
+    text-shadow: 0px -2px #D1B358;
+}
+
+.action-button:active
+{
+    transform: translate(0px,5px);
+    -webkit-transform: translate(0px,5px);
+    border-bottom: 1px solid;
+}
+
+#main-wrap > div { min-height: 450px; }
+
+#header,
+#footer {
+    min-height: 40px;
+}
+
+/* layout */
+#main-wrap {
+    /* overflow to handle inner floating block */
+    overflow: hidden;
+}
+
+#sidebar {
+    float: left;
+    width: 12%;
+}
+
+#content-wrap {
+    float: left;
+    width: 88%;
 }
