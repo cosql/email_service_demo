@@ -30,14 +30,13 @@ thead {
 
 th,
 td {
+    border-color: transparent;
     border-width: 1px;
     border-style: solid;
     padding: 5px 10px;
 }
 
-tbody tr:nth-child(even) {
-    background: WhiteSmoke;
-}
+tbody tr:hover { background: lightblue; }
 
 tbody tr td:nth-child(2) {
     text-align:center;
