@@ -23,7 +23,7 @@
       <div id="content-wrap">
         <form action="/outbox" method=get>
           <input type="text" name=keyword size=65
-                            style="height:30px;font-size:14pt;"">
+                            style="height:30px;font-size:14pt;">
           <br>
           <input type=submit value="Search Subject"
                  class="action-button shadow animate green">
@@ -33,13 +33,14 @@
         <caption>Your Top 10 Most Recent Messages</caption>
           <thead>
             <tr>
-              <td>Subject</td>
-              <td>Text</td>
-              <td>Recipient</td>
-              <td>Time</td>
-              <td>Status</td>
+              <th>Subject</th>
+              <th>Text</th>
+              <th>Recipient</th>
+              <th>Time</th>
+              <th>Status</th>
             </tr>
           </thead>
+          <tbody>
           {% for email in emails %}
           <tr>
             <td>{{ email.subject|escape }}</td>
@@ -57,6 +58,7 @@
             {% endif %}
           </tr>
           {% endfor %}
+          </tbody>
         </table>
         <!-- <hr> -->
         <!-- <form action="/send" method=post> -->
