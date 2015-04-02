@@ -57,22 +57,25 @@
 
           </div>
           <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Delete</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
-    <script>
+
+   <script>
       $(".btn[data-target='#myModal']").click(function() {
       var columnHeadings = $("thead th").map(function() {
       return $(this).text();
       }).get();
       columnHeadings.pop();
+      var email_id = $(this).parent().parent().attr('email_id');
       var columnValues = $(this).parent().siblings().map(function() {
       return $(this).text();
       }).get();
       var modalBody = $('<div id="modalContent"></div>');
-      var modalForm = $('<form role="form" name="modalForm" action="putYourPHPActionHere.php" method="post"></form>');
+      var modalForm = $('<form role="form" name="modalForm" email_id='+email_id+'></form>');
       $.each(columnHeadings, function(i, columnHeader) {
       var formGroup = $('<div class="form-group"></div>');
       formGroup.append('<label for="'+columnHeader+'">'+columnHeader+'</label>');
@@ -82,6 +85,7 @@
       modalBody.append(modalForm);
       $('.modal-body').html(modalBody);
       });
+
       $('.modal-footer .btn-primary').click(function() {
       $('form[name="modalForm"]').submit();
       });
