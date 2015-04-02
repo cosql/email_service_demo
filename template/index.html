@@ -1,6 +1,9 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <link type="text/css" rel="stylesheet" href="/static/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/static/style.css"/>
+    <script src="/js/test.js"></script>
   </head>
   <body>
     <div id="header">
@@ -28,7 +31,7 @@
           <input type=submit value="Search Subject"
                  class="action-button shadow animate green">
         </form>
-        <br>
+        <br><br>
         <table border="1" style="width:60%">
         <caption>Your Top 10 Most Recent Messages</caption>
           <thead>
@@ -60,18 +63,6 @@
           {% endfor %}
           </tbody>
         </table>
-        <!-- <hr> -->
-        <!-- <form action="/send" method=post> -->
-        <!--   From (Your Email Address):<br><textarea name=from rows=1 cols=30 -->
-        <!--   placeholder= {{ user.email }}></textarea><br> -->
-        <!--   Author (Your Name):<br><textarea name=sender rows=1 cols=30 -->
-        <!--   placeholder="Email Service"></textarea><br> -->
-        <!--   To (Email Address):<br><textarea name=recipient rows=1 cols=30></textarea><br> -->
-        <!--    Subject:<br><textarea name=subject rows=1 cols=60></textarea><br> -->
-        <!--   Text:<br><textarea name=text rows=3 cols=60></textarea><br> -->
-        <!--   <br><input type=submit value="Send"> -->
-        <!-- </form> -->
-
       </div>
     </div>
   </body>

@@ -1,48 +1,90 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
-    <link type="text/css" rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"></script>
+    <script src="/js/test.js"></script>
     <title>All Your Messages</title>
-</head>
+  </head>
 
-<body>
-[<a href="/"><b>Back To Home</b></a>]
+  <body>
+    [<a href="/"><b>Back To Home</b></a>]
 
-<h1>View All Your Messages</h1>
-<hr>
-<form action="/delete" method="post">
- <table border="1" style="width:60%">
-   <thead>
-      <tr>
-        <td>Subject</td>
-        <td>Text</td>
-        <td>Recipient</td>
-        <td>Time</td>
-        <td>Status</td>
-                <td></td>
-      </tr>
-   </thead>
-        {% for email in emails %}
-        <tr>
-          <td>{{ email.subject|escape }}</td>
-          <td>{{ email.text|escape }}</td>
-          {% if email.recipient %}
-            <td><code>{{ email.recipient }}</code></td>
-          {% else %}
-            <td><i>anonymous</i></td>
-          {% endif %}
-          <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
-          {% if email.status %}
-            <td><i>sent</i></td>
-          {% else %}
-            <td><i>unsent</i></td>
-          {% endif %}
-          <td>
-            <input name="check_list" type="radio" value= {{ email.msg_id }}>
-          </td>
+    <h1>View All Your Messages</h1>
+    <hr>
+    <table class="table table-bordered table-striped" border="1" style="width:60%">
+      <thead>
+        <tr style="text-align:center;">
+          <th>Subject</th>
+          <th>Text</th>
+          <th>Recipient</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      {% for email in emails %}
+      <tr email_id = {{ email.msg_id }}>
+        <td>{{ email.subject|escape }}</td>
+        <td>{{ email.text|escape }}</td>
+        {% if email.recipient %}
+        <td>{{ email.recipient }}</td>
+        {% else %}
+        <td><i>anonymous</i></td>
+        {% endif %}
+        <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
+        {% if email.status %}
+        <td><i>sent</i></td>
+        {% else %}
+        <td><i>unsent</i></td>
+        {% endif %}
+        <td>
+          <button class="btn btn-success" data-toggle="modal" data-target="#myModal">View</button>
+        </td>
       </tr>
       {% endfor %}
     </table>
-<input type="submit" name="delete message" value="delete message" class="action-button shadow animate green"/>
-</form>
-<address></address>
-</body> </html>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">×   </span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">Your Message</h4>
+          </div>
+          <div class="modal-body">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      $(".btn[data-target='#myModal']").click(function() {
+      var columnHeadings = $("thead th").map(function() {
+      return $(this).text();
+      }).get();
+      columnHeadings.pop();
+      var columnValues = $(this).parent().siblings().map(function() {
+      return $(this).text();
+      }).get();
+      var modalBody = $('<div id="modalContent"></div>');
+      var modalForm = $('<form role="form" name="modalForm" action="putYourPHPActionHere.php" method="post"></form>');
+      $.each(columnHeadings, function(i, columnHeader) {
+      var formGroup = $('<div class="form-group"></div>');
+      formGroup.append('<label for="'+columnHeader+'">'+columnHeader+'</label>');
+      formGroup.append('<input class="form-control" name="'+columnHeader+i+'" id="'+columnHeader+i+'" value="'+columnValues[i]+'" readonly/>');
+      modalForm.append(formGroup);
+      });
+      modalBody.append(modalForm);
+      $('.modal-body').html(modalBody);
+      });
+      $('.modal-footer .btn-primary').click(function() {
+      $('form[name="modalForm"]').submit();
+      });
+    </script>
+  </body>
+</html>
