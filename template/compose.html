@@ -1,6 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
     <link type="text/css" rel="stylesheet" href="/static/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"></script>
     <title>Compose your new email</title>
 </head>
 
@@ -10,14 +13,14 @@
 <h1>Compose your new email</h1>
 <hr>
     <form method=post action="/compose">
-      From (Your Email Address):<br><textarea name=from rows=1 cols=30
-        placeholder= {{ sender_email }}></textarea><br>
-      Author (Your Name):<br><textarea name=sender rows=1 cols=30
-        placeholder="Email Service"></textarea><br>
-      To (Email Address):<br><textarea name=recipient rows=1
-        cols=30>{{ email_context.recipient }}</textarea><br>
-      Subject:<br><textarea name=subject rows=1 cols=60>{{ email_context.subject }}</textarea><br>
-      Text:<br><textarea name=text rows=3 cols=60>{{ email_context.text }}</textarea><br>
+      From (Your Email Address):<br><input type="text" name="from" rows=1 cols=30
+        placeholder= {{ sender_email }}></input><br>
+      Author (Your Name):<br><input type="text" name="sender" rows=1 cols=30
+        placeholder="Email Service"></input><br>
+      To (Email Address):<br><input type="text" name="recipient" rows=1
+        cols=30 required>{{ email_context.recipient }}</input><br>
+      Subject:<br><input type="text" name="subject" rows=1 cols=60 required>{{ email_context.subject }}</input><br>
+      Text:<br><input type="text" name="text" style="width: 300px; height:250px; padding: 10 10 250px 0;">{{ email_context.text }}</input><br>
       <br>
       <div style="text-align: center"> 
        <input type="submit" class="action-button shadow animate red"
