@@ -122,7 +122,9 @@ class ComposeHandler(webapp2.RequestHandler):
         else:
             show_message = "Send failed"
         self.response.write(
-            '[<a href="/"><b>Back To Home</b></a>]<br><body><h2>%s</h2></body>' %
+            '<head>' +
+            '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">' +
+            '</head>[<a href="/"><b>Back To Home</b></a>]<br><body><h2>%s</h2></body>' %
             show_message)
 
     def __parse_request(self):
