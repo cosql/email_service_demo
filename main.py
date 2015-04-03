@@ -211,8 +211,8 @@ class DraftHandler(webapp2.RequestHandler):
 class DeleteHandler(webapp2.RequestHandler):
     ''' handler for message delete '''
     def post(self):
-        print self.request.get('check_list')
-        email = Email.query(Email.msg_id == str(self.request.get('check_list')))
+        print self.request.get('email_id')
+        email = Email.query(Email.msg_id == str(self.request.get('email_id')))
         if email is None:
             self.redirect('/outbox')
             return
@@ -223,7 +223,7 @@ class DeleteHandler(webapp2.RequestHandler):
         time.sleep(1)
         memcache.delete(user_id)
         memcache.flush_all()
-        self.redirect('/outbox')
+        # self.redirect('/outbox')
 
 app = webapp2.WSGIApplication([
     ( '/', MainHandler),

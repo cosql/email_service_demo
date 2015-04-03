@@ -3,8 +3,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css"></script>
-    <script src="/js/test.js"></script>
+    <script src="/js/jquery.growl.js" type="text/javascript"></script>
+    <link href="/static/jquery.growl.css" rel="stylesheet" type="text/css" />
     <title>All Your Messages</title>
   </head>
 
@@ -22,6 +22,7 @@
           <th>Time</th>
           <th>Status</th>
           <th>Action</th>
+          <th>Delete</th>
         </tr>
       </thead>
       {% for email in emails %}
@@ -42,9 +43,24 @@
         <td>
           <button class="btn btn-success" data-toggle="modal" data-target="#myModal">View</button>
         </td>
+        <td class='deleterow'>
+          <div class='glyphicon glyphicon-remove'></div>
+        </td>
       </tr>
       {% endfor %}
     </table>
+        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>Hello</h1>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -57,18 +73,17 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Delete</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
-
    <script>
       $(".btn[data-target='#myModal']").click(function() {
       var columnHeadings = $("thead th").map(function() {
       return $(this).text();
       }).get();
+      columnHeadings.pop();
       columnHeadings.pop();
       var email_id = $(this).parent().parent().attr('email_id');
       var columnValues = $(this).parent().siblings().map(function() {
@@ -78,7 +93,7 @@
       var modalForm = $('<form role="form" name="modalForm" email_id='+email_id+'></form>');
       $.each(columnHeadings, function(i, columnHeader) {
       var formGroup = $('<div class="form-group"></div>');
-      formGroup.append('<label for="'+columnHeader+'">'+columnHeader+'</label>');
+      formGroup.append('<label for="'+columnHeader+'">'+columnHeader+'</label><br>');
       formGroup.append('<input class="form-control" name="'+columnHeader+i+'" id="'+columnHeader+i+'" value="'+columnValues[i]+'" readonly/>');
       modalForm.append(formGroup);
       });
@@ -88,6 +103,23 @@
 
       $('.modal-footer .btn-primary').click(function() {
       $('form[name="modalForm"]').submit();
+      });
+
+      $(".deleterow").on("click", function(){
+      var $row = $(this).parent('tr');
+      var email_id = $row.attr("email_id");
+      $.ajax({
+      type: "POST",
+      url: "/delete",
+      data: "email_id=" + email_id,
+      success: function() {
+      $.growl.notice({ message: "The message is deleted!" });
+      $row.remove();
+      },
+      error: function() {
+        $.growl.error({ message: "The message is not deleted!" });
+      }
+      });
       });
     </script>
   </body>
