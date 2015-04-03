@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import logging
 import os
 import time
@@ -131,7 +132,7 @@ class ComposeHandler(webapp2.RequestHandler):
         ''' parse user request'''
         self.sender_name = self.request.get('sender_name')
         self.sender_email = self.request.get('sender_email')
-        self.subject = str(self.request.get('subject'))
+        self.subject = str(self.request.get('subject').encode('utf8'))
         self.text = self.request.get('text')
         self.recipient = self.request.get('recipient')
 
@@ -181,9 +182,9 @@ class ComposeHandler(webapp2.RequestHandler):
 class OutboxHandler(webapp2.RequestHandler):
     ''' handler for outbox view '''
     def get(self):
-        keyword = str(self.request.get('keyword'))
+        keyword = str(self.request.get('keyword').encode('utf8'))
+        print keyword
         user_id = users.get_current_user().user_id()
-        print user_id
         if len(keyword) == 0:
             # retrieve all sent messages
             emails = Email.query(Email.user_id == user_id).order(-Email.date)
