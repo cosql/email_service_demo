@@ -73,6 +73,7 @@
 
           </div>
           <div class="modal-footer">
+            <button type="button" class="btn btn-primary" style="display:none" id="editSubmit">Edit</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -90,14 +91,19 @@
       return $(this).text();
       }).get();
       var modalBody = $('<div id="modalContent"></div>');
-      var modalForm = $('<form role="form" name="modalForm" email_id='+email_id+'></form>');
+      var modalForm = $('<form role="form" name="modalForm" action="compose"></form>');
+
       $.each(columnHeadings, function(i, columnHeader) {
-      var formGroup = $('<div class="form-group"></div>');
-      formGroup.append('<label for="'+columnHeader+'">'+columnHeader+'</label><br>');
-      formGroup.append('<input class="form-control" name="'+columnHeader+i+'" id="'+columnHeader+i+'" value="'+columnValues[i]+'" readonly/>');
+      modalBody.append('<p>'+columnHeader+'</p>');
+      modalBody.append('<pre class="prettyprint">' + columnValues[i] + '</pre>');
+      if (columnHeader == 'Status' && columnValues[i] == 'unsent') {
+      var formGroup = $('<input type="hidden" class="form-control" name="email_id" id="email_id" value='+email_id+' readonly/>');
       modalForm.append(formGroup);
+      $('#editSubmit').show();
+      }
       });
       modalBody.append(modalForm);
+
       $('.modal-body').html(modalBody);
       });
 

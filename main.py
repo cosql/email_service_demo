@@ -51,10 +51,10 @@ class MainHandler(webapp2.RequestHandler):
 class ComposeHandler(webapp2.RequestHandler):
     # handler for email compose
     def get(self):
-        print self.request.get('check_list')
+        print self.request.get('email_id')
         # check_list is not empty if user wants to edit some unsent email
         emails = Email.query(
-            Email.msg_id == str(self.request.get('check_list')),
+            Email.msg_id == str(self.request.get('email_id')),
             Email.status == False)
         email_context = None
         for e in emails:
@@ -202,13 +202,12 @@ class DraftHandler(webapp2.RequestHandler):
     ''' handler for outbox view '''
     def get(self):
         user_id = users.get_current_user().user_id()
-        print user_id
         emails = Email.query(Email.user_id == user_id,
                              Email.status == False).order(-Email.date)
         context = {
             'emails':    emails,
         }
-        tmpl = os.path.join(os.path.dirname(__file__), 'template/drafts.html')
+        tmpl = os.path.join(os.path.dirname(__file__), 'template/outbox.html')
         self.response.write(render(tmpl, context))
 
 class DeleteHandler(webapp2.RequestHandler):
