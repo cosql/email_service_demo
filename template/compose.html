@@ -20,7 +20,7 @@
 
 <h1>Compose your new email</h1>
 <hr>
-<form id="compose" method=post action="/compose">
+<form id="compose" method=post action="/compose" onsubmit="onSubmit()">
   From (Your Email Address):<br><input type="text" name="from" style="width: 200px;"
                                        placeholder= {{ sender_email }} value="{{ sender_email}}"></input><br>
   Author (Your Name):<br><input type="text" name="sender" style="width: 200px;"
@@ -40,6 +40,10 @@
 </form>
 
 <script>
+  function onSubmit() {
+  $(".action-button").hide();
+  return true;
+  }
 </script>
 <address></address>
 </body> </html>
