@@ -101,11 +101,15 @@ class ComposeHandler(webapp2.RequestHandler):
 
         # validate email request
         valid, reason = email_request.validate()
-
+        header = '<head>' + \
+                '<link rel=\"stylesheet\" \
+                href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css\">' + \
+                '<meta http-equiv="refresh" content="3;/" />' + \
+                '</head>'
         if (valid == False):
             self.response.write(
-                '[<a href="/"><b>Back To Home</b></a>]<br><body><h2> \
-                  Send Failed, reason: <i>%s</i></h2></body>' %
+                header + '[<a href="/"><b>Back To Home</b></a>]<br><body><h2>' +
+                'Send Failed, reason: <i>%s</i></h2></body>' %
                 reason)
             return
 
@@ -123,9 +127,7 @@ class ComposeHandler(webapp2.RequestHandler):
         else:
             show_message = "Send failed"
         self.response.write(
-            '<head>' +
-            '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">' +
-            '</head>[<a href="/"><b>Back To Home</b></a>]<br><body><h2>%s</h2></body>' %
+            header + '[<a href="/"><b>Back To Home</b></a>]<br><body><h2>%s</h2></body>' %
             show_message)
 
     def __parse_request(self):
@@ -182,8 +184,7 @@ class ComposeHandler(webapp2.RequestHandler):
 class OutboxHandler(webapp2.RequestHandler):
     ''' handler for outbox view '''
     def get(self):
-        target = self.request.get('target')
-        print 'target ' + target
+        action = self.request.get('action')
         keyword = str(self.request.get('keyword').encode('utf8'))
         user_id = users.get_current_user().user_id()
         if len(keyword) == 0:
