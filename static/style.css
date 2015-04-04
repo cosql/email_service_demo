@@ -70,7 +70,7 @@ tfoot tr th:last-child {
     position: relative;
     padding: 5px 20px;
     margin: 0px 5px 5px 0px;
-    width: 69px;
+    width: 109px;
     float: left;
     border-radius: 5px;
     font-family: 'Helvetica', cursive;
@@ -95,10 +95,10 @@ tfoot tr th:last-child {
 
 .green
 {
+    width: 169px;
     background-color: #82BF56;
     border-bottom: 5px solid #669644;
     text-shadow: 0px -2px #669644;
-    width: 169px;
 }
 
 .yellow
@@ -130,10 +130,10 @@ tfoot tr th:last-child {
 
 #sidebar {
     float: left;
-    width: 12%;
+    width: 16%;
 }
 
 #content-wrap {
     float: left;
-    width: 88%;
+    width: 84%;
 }

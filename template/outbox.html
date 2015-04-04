@@ -4,6 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="/js/jquery.growl.js" type="text/javascript"></script>
+    <script src="/js/jquery.js" type="text/javascript"></script>
     <link href="/static/jquery.growl.css" rel="stylesheet" type="text/css" />
     <title>All Your Messages</title>
   </head>
@@ -34,7 +35,7 @@
         {% else %}
         <td><i>anonymous</i></td>
         {% endif %}
-        <td><small>[<i>{{ email.date.ctime }}</i>]</small></td>
+        <td><small>[<i><script type="text/javascript">localize('{{ email.date.ctime }}');</script></i>]</small></td>
         {% if email.status %}
         <td><i>sent</i></td>
         {% else %}
