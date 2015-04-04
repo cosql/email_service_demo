@@ -44,8 +44,8 @@
         <td>
           <button class="btn btn-success" data-toggle="modal" data-target="#myModal">View</button>
         </td>
-        <td class='deleterow'>
-          <div class='glyphicon glyphicon-remove'></div>
+        <td>
+          <button class="deleterow btn btn-danger" onClick="this.disabled=1">Delete</button>
         </td>
       </tr>
       {% endfor %}
@@ -113,8 +113,9 @@
       });
 
       $(".deleterow").on("click", function(){
-      var $row = $(this).parent('tr');
+      var $row = $(this).parent().parent('tr');
       var email_id = $row.attr("email_id");
+      $(this).attr('disabled', true);
       $.ajax({
       type: "POST",
       url: "/delete",
@@ -125,6 +126,7 @@
       },
       error: function() {
         $.growl.error({ message: "The message is not deleted!" });
+      $(this).attr('disabled', false);
       }
       });
       });
