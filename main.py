@@ -184,7 +184,7 @@ class ComposeHandler(webapp2.RequestHandler):
 class OutboxHandler(webapp2.RequestHandler):
     ''' handler for outbox view '''
     def get(self):
-        action = self.request.get('action')
+        target = self.request.get('target')
         keyword = str(self.request.get('keyword').encode('utf8'))
         user_id = users.get_current_user().user_id()
         if len(keyword) == 0:
