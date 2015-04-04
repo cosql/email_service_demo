@@ -16,14 +16,23 @@
     </div>
     <div id="main-wrap">
       <div id="sidebar">
-          <a href="compose" class="action-button shadow animate blue">Compose</a>
+        <form action="/compose"  method=get>
+          <input type=submit value="Compose" class="action-button shadow animate blue">
+        </form>
         <br><br>
-          <a href="outbox" class="action-button shadow animate yellow">Mail Box</a>
+        <form action="/outbox"  method=get>
+          <input type="hidden" name="target" value="all">
+          <input type=submit value="Outbox" class="action-button shadow animate yellow">
+        </form>
         <br><br>
-          <a href="drafts" class="action-button shadow animate red">Drafts</a>
+        <form action="/outbox"  method=get>
+          <input type="hidden" name="target" value="unsent">
+          <input type=submit value="Drafts" class="action-button shadow animate red">
+        </form>
       </div>
       <div id="content-wrap">
-        <form action="/outbox" method=get>
+        <form action="/outbox"  method=get>
+          <input type="hidden" name="target" value="all">
           <input type="text" name=keyword size=65
                             style="height:30px;font-size:14pt;">
           <br>

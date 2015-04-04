@@ -182,28 +182,24 @@ class ComposeHandler(webapp2.RequestHandler):
 class OutboxHandler(webapp2.RequestHandler):
     ''' handler for outbox view '''
     def get(self):
+        target = self.request.get('target')
+        print 'target ' + target
         keyword = str(self.request.get('keyword').encode('utf8'))
-        print keyword
         user_id = users.get_current_user().user_id()
         if len(keyword) == 0:
             # retrieve all sent messages
-            emails = Email.query(Email.user_id == user_id).order(-Email.date)
+            if target != 'unsent':
+                emails = Email.query(
+                    Email.user_id == user_id).order(-Email.date)
+            # retrieve unsent messages
+            else:
+                emails = Email.query(Email.user_id == user_id,
+                                     Email.status == False).order(-Email.date)
+
         else:
             # retrieve messages with certain subject $keyword
             emails = Email.query(Email.user_id == user_id,
                                  Email.subject == keyword).order(-Email.date)
-        context = {
-            'emails':    emails,
-        }
-        tmpl = os.path.join(os.path.dirname(__file__), 'template/outbox.html')
-        self.response.write(render(tmpl, context))
-
-class DraftHandler(webapp2.RequestHandler):
-    ''' handler for outbox view '''
-    def get(self):
-        user_id = users.get_current_user().user_id()
-        emails = Email.query(Email.user_id == user_id,
-                             Email.status == False).order(-Email.date)
         context = {
             'emails':    emails,
         }
@@ -232,5 +228,4 @@ app = webapp2.WSGIApplication([
     ( '/compose', ComposeHandler),
     ( '/outbox', OutboxHandler),
     ( '/delete', DeleteHandler),
-    ( '/drafts', DraftHandler),
     ], debug=True)
