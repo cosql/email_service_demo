@@ -210,14 +210,12 @@ class OutboxHandler(webapp2.RequestHandler):
 class DeleteHandler(webapp2.RequestHandler):
     ''' handler for message delete '''
     def post(self):
-        print self.request.get('email_id')
         email = Email.query(Email.msg_id == str(self.request.get('email_id')))
         if email is None:
             self.redirect('/outbox')
             return
         user_id = users.get_current_user().user_id()
         for e in email:
-            print e
             e.key.delete()
         time.sleep(1)
         memcache.delete(user_id)
