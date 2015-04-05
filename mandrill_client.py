@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class mandrill_client():
     def __init__(self, api_key = config.mandrill_key):
-        print dir(mandrill)
         self.handler = mandrill.Mandrill(api_key)
 
     def send_email(self, email_request):
