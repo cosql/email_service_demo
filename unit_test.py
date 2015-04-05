@@ -1,10 +1,28 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# fix gae library path first
+import sys
+sys.path.insert(0, '/usr/local/google_appengine')
+import dev_appserver
+dev_appserver.fix_sys_path()
+
 import unittest
+
+sys.path.insert(0, '/usr/local/google_appengine/lib')
+sys.path.insert(0, '/usr/local/google_appengine/lib/webapp2-2.5.2')
+
+from google.appengine.api import memcache
+from google.appengine.ext import ndb
+from google.appengine.ext import testbed
 
 from email_client import EmailRequest
 from mailgun_client import mailgun_client
 from mandrill_client import mandrill_client
+import main
 
 class TestEmailClient(unittest.TestCase):
+    ''' test class for email client'''
     def test_validEmailAddress(self):
         request = EmailRequest('test@example.com')
         ret, reason = request.validate()
@@ -42,6 +60,46 @@ class TestEmailClient(unittest.TestCase):
         ret = cl.send_email(request)
         self.assertTrue(ret)
 
+class TestDataStore(unittest.TestCase):
+    ''' test class for data store and memcache'''
+    def setUp(self):
+        # First, create an instance of the Testbed class.
+        self.testbed = testbed.Testbed()
+        # Then activate the testbed, which prepares the service stubs for use.
+        self.testbed.activate()
+        # Next, declare which service stubs you want to use.
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
+
+    def tearDown(self):
+        self.testbed.deactivate()
+
+    def testEntityDataStore(self):
+        email = main.Email()
+        email.put()
+
+        # request 2, we should only get 1
+        self.assertEqual(1, len(main.Email.query().fetch(2)))
+
+        # delete email, Email data store is empty now
+        email.key.delete()
+        self.assertEqual(0, len(main.Email.query().fetch(2)))
+
+    def testEntityMemcache(self):
+        email = main.Email()
+        memcache.add("test", email)
+
+        emailCache = memcache.get("test")
+        self.assertNotEqual(emailCache, None)
+        self.assertNotEqual(id(emailCache), id(email))
+
+        memcache.delete("test")
+        emailCache = memcache.get("test")
+        self.assertEqual(emailCache, None)
+
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestEmailClient)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestEmailClient))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestDataStore))
+
     unittest.TextTestRunner(verbosity=2).run(suite)
