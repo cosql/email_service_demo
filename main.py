@@ -61,7 +61,7 @@ class ComposeHandler(webapp2.RequestHandler):
             email_context = e
             self.response.set_cookie('msg_id', email_context.msg_id)
 
-        if email_context.sender_email is None:
+        if email_context is None or email_context.sender_email is None:
             sender_email = users.get_current_user().email()
         else:
             sender_email = email_context.sender_email

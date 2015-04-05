@@ -116,6 +116,7 @@
       var $row = $(this).parent().parent('tr');
       var email_id = $row.attr("email_id");
       $(this).attr('disabled', true);
+      var btn = $(this);
       $.ajax({
       type: "POST",
       url: "/delete",
@@ -125,8 +126,8 @@
       $row.remove();
       },
       error: function() {
-        $.growl.error({ message: "The message is not deleted!" });
-      $(this).attr('disabled', false);
+      $.growl.error({ message: "The message is not deleted!" });
+      btn.attr('disabled', false);
       }
       });
       });
