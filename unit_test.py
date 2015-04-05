@@ -9,9 +9,6 @@ dev_appserver.fix_sys_path()
 
 import unittest
 
-sys.path.insert(0, '/usr/local/google_appengine/lib')
-sys.path.insert(0, '/usr/local/google_appengine/lib/webapp2-2.5.2')
-
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
@@ -19,7 +16,7 @@ from google.appengine.ext import testbed
 from email_client import EmailRequest
 from mailgun_client import mailgun_client
 from mandrill_client import mandrill_client
-import main
+from main import Email
 
 class TestEmailClient(unittest.TestCase):
     ''' test class for email client'''
@@ -75,23 +72,56 @@ class TestDataStore(unittest.TestCase):
         self.testbed.deactivate()
 
     def testEntityDataStore(self):
-        email = main.Email()
+        email = Email()
         email.put()
 
-        # request 2, we should only get 1
-        self.assertEqual(1, len(main.Email.query().fetch(2)))
+        # fetch 2 records, we should only get 1
+        self.assertEqual(1, len(Email.query().fetch(2)))
 
         # delete email, Email data store is empty now
         email.key.delete()
-        self.assertEqual(0, len(main.Email.query().fetch(2)))
+        self.assertEqual(0, len(Email.query().fetch(2)))
+
+    def testSearchDataStore(self):
+        email = Email()
+        email.subject = "test"
+        email.put()
+
+        # search email with subject "test", should find 1 match
+        self.assertEqual(1, len(Email.query(Email.subject == "test").fetch()))
+
+        # delete email, Email data store is empty now
+        email.key.delete()
+        # search email with subject "test", should find 0 match
+        self.assertEqual(0, len(Email.query(Email.subject == "test").fetch()))
 
     def testEntityMemcache(self):
-        email = main.Email()
-        memcache.add("test", email)
+        # list of Emails are cached for each user
+        email = Email()
+        email.subject = "test"
+        memcache.add("test", [email])
 
-        emailCache = memcache.get("test")
-        self.assertNotEqual(emailCache, None)
+        # get Email list for user "test"
+        emails = memcache.get("test")
+        self.assertNotEqual(emails, None)
+        self.assertEqual(1, len(emails))
+
+        emailCache = emails[0]
+        # cached email should not the same object as the original email object
         self.assertNotEqual(id(emailCache), id(email))
+        self.assertEqual(emailCache.subject, "test")
+
+        emailCache.subject = "test v2"
+        memcache.set("test", [emailCache])
+
+        # get Email list for user "test"
+        emails = memcache.get("test")
+        self.assertNotEqual(emails, None)
+        self.assertEqual(1, len(emails))
+
+        emailCache = emails[0]
+        # test if email subject changes in the cache
+        self.assertEqual(emailCache.subject, "test v2")
 
         memcache.delete("test")
         emailCache = memcache.get("test")
