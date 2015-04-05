@@ -51,7 +51,6 @@ class MainHandler(webapp2.RequestHandler):
 class ComposeHandler(webapp2.RequestHandler):
     # handler for email compose
     def get(self):
-        print self.request.get('email_id')
         # check_list is not empty if user wants to edit some unsent email
         emails = Email.query(
             Email.msg_id == str(self.request.get('email_id')),
@@ -62,7 +61,10 @@ class ComposeHandler(webapp2.RequestHandler):
             email_context = e
             self.response.set_cookie('msg_id', email_context.msg_id)
 
-        sender_email = users.get_current_user().email()
+        if email_context.sender_email is None:
+            sender_email = users.get_current_user().email()
+        else:
+            sender_email = email_context.sender_email
         context = {
             'sender_email':      sender_email,
             'email_context':     email_context
@@ -158,9 +160,7 @@ class ComposeHandler(webapp2.RequestHandler):
 
     def __update_datastore(self, status=False):
         # assign msg_id if not existing
-        print "updating"
         if self.msg_id == None:
-            print "need new msg_id"
             self.msg_id = str(uuid.uuid1())
         else:
             print self.msg_id
