@@ -34,28 +34,28 @@ from main import (
 
 class TestEmailClient(unittest.TestCase):
     ''' test class for email client'''
-    def test_validEmailAddress(self):
+    def testValidEmailAddress(self):
         request = EmailRequest('test@example.com')
         ret, reason = request.validate()
         self.assertTrue(ret)
 
-    def test_badEmailAddress(self):
+    def testBadEmailAddress(self):
         request = EmailRequest('badFormat')
         ret, reason = request.validate()
         self.assertFalse(ret)
 
-    def test_validEmailSubject(self):
+    def testValidEmailSubject(self):
         request = EmailRequest('test@example.com', subject='subject')
         ret, reason = request.validate()
         self.assertTrue(ret)
 
-    def test_badEmailSubject(self):
+    def testBadEmailSubject(self):
         long_subject = 'a' * 501
         request = EmailRequest('test@example.com', subject=long_subject)
         ret, reason = request.validate()
         self.assertFalse(ret)
 
-    def test_mailgunClient(self):
+    def testMailgunClient(self):
         request = EmailRequest('test@example.com', subject='mailgun',
                                sender_email='cosql@github.com', text="test")
         cl = mailgun_client(
@@ -64,7 +64,7 @@ class TestEmailClient(unittest.TestCase):
         ret = cl.send_email(request)
         self.assertTrue(ret)
 
-    def test_mandrillClient(self):
+    def testMandrillClient(self):
         request = EmailRequest('test@example.com', subject='mandrill',
                                sender_email='cosql@github.com', text='test')
         cl = mandrill_client(api_key='LNLWrN12hPA6Afju_h3gWQ')
