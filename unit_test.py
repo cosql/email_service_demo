@@ -12,6 +12,7 @@ sys.path.append(os.path.join("/usr/local/google_appengine",
 from django.template.loaders import filesystem
 filesystem.load_template_source = filesystem._loader.load_template_source
 
+import re
 import unittest
 import webtest
 import webapp2
@@ -23,7 +24,13 @@ from google.appengine.ext import testbed
 from email_client import EmailRequest
 from mailgun_client import mailgun_client
 from mandrill_client import mandrill_client
-from main import Email, MainHandler
+from main import (
+    Email,
+    MainHandler,
+    ComposeHandler,
+    DeleteHandler,
+    OutboxHandler,
+)
 
 class TestEmailClient(unittest.TestCase):
     ''' test class for email client'''
@@ -148,22 +155,196 @@ class TestApp(unittest.TestCase):
             user_is_admin='1',
             overwrite=True,
         )
+        # setup handlers
+        self.mainApp = webapp2.WSGIApplication([('/', MainHandler)])
+        self.composeApp = webapp2.WSGIApplication([('/compose',
+                                                    ComposeHandler)])
+        self.deleteApp = webapp2.WSGIApplication([('/delete',
+                                                    DeleteHandler)])
+        self.outboxApp = webapp2.WSGIApplication([('/outbox',
+                                                    OutboxHandler)])
 
     def tearDown(self):
         self.testbed.deactivate()
 
     def testMainHandler(self):
         # request home page
-        app = webapp2.WSGIApplication([('/', MainHandler)])
-        testapp = webtest.TestApp(app)
-
+        testapp = webtest.TestApp(self.mainApp)
         response = testapp.get('/')
         # check the status code
         self.assertEqual(200, response.status_code)
 
+    def testComposeHandlerSave(self):
+        # request home page
+        testapp = webtest.TestApp(self.composeApp)
+        # no email for now
+        self.assertEqual(0, len(Email.query(Email.user_id == "123456").fetch()))
+        params = { "action" : "save",
+                   "sender_name" : "unit test",
+                   "sender_email" : "cosql@github.com",
+                   "recipient" : "test@example.com",
+                   "subject" : "saving unit test",
+                   "text" : "unit test text",
+                 }
+        response = testapp.post('/compose', params)
+        # check the status code, redirect to home
+        self.assertEqual(302, response.status_code)
+
+        emails = Email.query(Email.user_id == "123456",
+                             Email.status == False).fetch()
+        # 1 unsent email found
+        self.assertEqual(1, len(emails))
+        email = emails[0]
+        self.assertEqual(False, email.status)
+        # check the email fields are the same in the request
+        self.assertEqual("unit test", email.sender)
+        self.assertEqual("cosql@github.com", email.sender_email)
+        self.assertEqual("test@example.com", email.recipient)
+        self.assertEqual("saving unit test", email.subject)
+        self.assertEqual("unit test text", email.text)
+
+        params = { "email_id" : email.msg_id}
+        # request to edit the email we just saved
+        response = testapp.get('/compose', params)
+
+        self.assertEqual(200, response.status_code)
+        # the field should be filled by compose handler, i.e., email text
+        self.assertNotEqual(-1, response.body.find('value="unit test text"'))
+
+        email.key.delete()
+
+    def testComposeHandlerSend(self):
+        # request home page
+        testapp = webtest.TestApp(self.composeApp)
+        # no email for now
+        self.assertEqual(0, len(Email.query(Email.user_id == "123456").fetch()))
+        params = { "action" : "send",
+                   "sender_name" : "unit test",
+                   "sender_email" : "cosql@github.com",
+                   "recipient" : "test@example.com",
+                   "subject" : "sending unit test",
+                   "text" : "unit test text",
+                 }
+        response = testapp.post('/compose', params)
+        # check the status code, result page is returned
+        self.assertEqual(200, response.status_code)
+
+        emails = Email.query(Email.user_id == "123456",
+                             Email.status == True).fetch()
+        # 1 sent email found
+        self.assertEqual(1, len(emails))
+        email = emails[0]
+        self.assertEqual(True, email.status)
+        # check the email fields are the same in the request
+        self.assertEqual("unit test", email.sender)
+        self.assertEqual("cosql@github.com", email.sender_email)
+        self.assertEqual("test@example.com", email.recipient)
+        self.assertEqual("sending unit test", email.subject)
+        self.assertEqual("unit test text", email.text)
+
+        email.key.delete()
+
+    def testDeleteHandler(self):
+        # save an email first, then delete it by requesting DeleteHandler
+        testapp = webtest.TestApp(self.composeApp)
+        # no email for now
+        self.assertEqual(0, len(Email.query(Email.user_id == "123456").fetch()))
+        params = { "action" : "save",
+                   "sender_name" : "unit test",
+                   "sender_email" : "cosql@github.com",
+                   "recipient" : "test@example.com",
+                   "subject" : "saving unit test",
+                   "text" : "unit test text",
+                 }
+        response = testapp.post('/compose', params)
+        # check the status code, redirect to home
+        self.assertEqual(302, response.status_code)
+
+        testapp = webtest.TestApp(self.deleteApp)
+        emails = Email.query(Email.user_id == "123456",
+                             Email.status == False).fetch()
+        # 1 unsent email found
+        self.assertEqual(1, len(emails))
+        email = emails[0]
+        self.assertEqual(False, email.status)
+
+        params = { "email_id" : email.msg_id}
+        # delete the email using DeleteHandler
+        response = testapp.post('/delete', params)
+
+        self.assertEqual(200, response.status_code)
+        # email is deleted by DeleteHandler
+        self.assertEqual(0, len(Email.query(Email.user_id == "123456").fetch()))
+
+    def testOutboxHandler(self):
+        # save an email first, then send another one
+        testapp = webtest.TestApp(self.composeApp)
+        # no email for now
+        self.assertEqual(0, len(Email.query(Email.user_id == "123456").fetch()))
+        params = { "action" : "save",
+                   "sender_name" : "unit test",
+                   "sender_email" : "cosql@github.com",
+                   "recipient" : "test@example.com",
+                   "subject" : "saving unit test",
+                   "text" : "unit test text",
+                 }
+        response = testapp.post('/compose', params)
+        # check the status code, redirect to home
+        self.assertEqual(302, response.status_code)
+        # get the unsent email id in data store
+        unsentEmailID = Email.query(Email.user_id == "123456",
+                                    Email.status == False).fetch()[0].msg_id
+
+        params = { "action" : "send",
+                   "sender_name" : "unit test",
+                   "sender_email" : "cosql@github.com",
+                   "recipient" : "test@example.com",
+                   "subject" : "sending unit test",
+                   "text" : "unit test text",
+                 }
+        response = testapp.post('/compose', params)
+        # check the status code, showing result page
+        self.assertEqual(200, response.status_code)
+        # get the sent email id in data store
+        sentEmailID = Email.query(Email.user_id == "123456",
+                                  Email.status == True).fetch()[0].msg_id
+
+        testapp = webtest.TestApp(self.outboxApp)
+        emails = Email.query(Email.user_id == "123456").fetch()
+        # 2 emails found
+        self.assertEqual(2, len(emails))
+
+        # request the default outbox page
+        response = testapp.get('/outbox')
+        self.assertEqual(200, response.status_code)
+        # should contain two emails in the result html
+        self.assertEqual(2, len(re.findall("tr email_id =", response.body)))
+        self.assertNotEqual(-1, response.body.find(unsentEmailID))
+        self.assertNotEqual(-1, response.body.find(sentEmailID))
+
+        # request drafts page
+        params = { "target" : "unsent"}
+        response = testapp.get('/outbox', params)
+        self.assertEqual(200, response.status_code)
+        # should see two emails in the result html
+        self.assertEqual(1, len(re.findall("tr email_id =", response.body)))
+        self.assertNotEqual(-1, response.body.find(unsentEmailID))
+
+        # search by keyword
+        params = { "keyword" : "sending unit test"}
+        response = testapp.get('/outbox', params)
+        self.assertEqual(200, response.status_code)
+        # should see two emails in the result html
+        self.assertEqual(1, len(re.findall("tr email_id =", response.body)))
+        self.assertNotEqual(-1, response.body.find(sentEmailID))
+
+        # delete all emails in data store at the end of the test
+        for email in Email.query(Email.user_id == "123456").fetch():
+            email.key.delete()
+
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    # suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestEmailClient))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestEmailClient))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestDataStore))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestApp))
 
