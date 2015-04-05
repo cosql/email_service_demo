@@ -2,12 +2,19 @@
 # -*- coding: utf-8 -*-
 
 # fix gae library path first
+import os
 import sys
 sys.path.insert(0, '/usr/local/google_appengine')
 import dev_appserver
 dev_appserver.fix_sys_path()
+sys.path.append(os.path.join("/usr/local/google_appengine",
+                             'lib', 'django-1.3'))
+from django.template.loaders import filesystem
+filesystem.load_template_source = filesystem._loader.load_template_source
 
 import unittest
+import webtest
+import webapp2
 
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
@@ -16,7 +23,7 @@ from google.appengine.ext import testbed
 from email_client import EmailRequest
 from mailgun_client import mailgun_client
 from mandrill_client import mandrill_client
-from main import Email
+from main import Email, MainHandler
 
 class TestEmailClient(unittest.TestCase):
     ''' test class for email client'''
@@ -127,9 +134,37 @@ class TestDataStore(unittest.TestCase):
         emailCache = memcache.get("test")
         self.assertEqual(emailCache, None)
 
+class TestApp(unittest.TestCase):
+    def setUp(self):
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
+        # login as a user
+        self.testbed.init_user_stub()
+        self.testbed.setup_env(
+            user_email='hello@gmail.com',
+            user_id='123456',
+            user_is_admin='1',
+            overwrite=True,
+        )
+
+    def tearDown(self):
+        self.testbed.deactivate()
+
+    def testMainHandler(self):
+        # request home page
+        app = webapp2.WSGIApplication([('/', MainHandler)])
+        testapp = webtest.TestApp(app)
+
+        response = testapp.get('/')
+        # check the status code
+        self.assertEqual(200, response.status_code)
+
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestEmailClient))
+    # suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestEmailClient))
     suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestDataStore))
+    suite.addTest(unittest.TestLoader().loadTestsFromTestCase(TestApp))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
