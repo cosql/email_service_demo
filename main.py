@@ -13,13 +13,16 @@ from google.appengine.ext.webapp.template import render
 
 from email_client import EmailRequest, EmailClient
 
+# email entity schema in data store
 class Email(ndb.Model):
     sender = ndb.StringProperty()
     sender_email = ndb.StringProperty()
     text = ndb.TextProperty()
+    # blob property can be indexed
     subject = ndb.BlobProperty(indexed=True)
     status = ndb.BooleanProperty()
     recipient = ndb.StringProperty()
+    # blob property can be indexed
     msg_id = ndb.BlobProperty(indexed=True)
     user_id = ndb.StringProperty()
     date = ndb.DateTimeProperty(auto_now=True)
@@ -39,9 +42,11 @@ class MainHandler(webapp2.RequestHandler):
             emails = Email.query(
                 Email.user_id == user_id).order(-Email.date).fetch(10)
             memcache.add(user_id, emails)
+        # render home page with user's recent emails
         context = {
             'user':      user,
             'emails':    emails,
+            'email_count': len(emails),
             'login':     users.create_login_url(self.request.uri),
             'logout':    users.create_logout_url(self.request.uri),
         }
