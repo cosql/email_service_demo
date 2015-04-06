@@ -21,6 +21,7 @@ class mandrill_client():
             'to': [{'email': email_request.recipient,}],
             'text' : email_request.text,
             }
+        # send email using mandrill library
         try:
             result = self.handler.messages.send(message=message,
                                                 async=False,
@@ -31,7 +32,6 @@ class mandrill_client():
                          (e.__class__, e))
             raise
 
-        # print result[0]['status'], result[0]['_id']
         if result[0]['status'] == u'sent':
             return True
         else:

@@ -19,23 +19,29 @@ class mailgun_client():
           'https://api.mailgun.net/v2/{0}/messages'.format(sandbox)
 
     def send_email(self, email_request):
-        request = requests.post(self.request_url,
-                                auth=('api', self.api_key),
-                                data={
-                                    'from' : '{0} {1}'.format(
-                                        email_request.sender_name,
-                                        email_request.sender_email),
-                                    'to': email_request.recipient,
-                                    'subject': email_request.subject,
-                                    'text': email_request.text,
-                                    })
+        # send message using requests library
+        try:
+            response = requests.post(self.request_url,
+                                     auth=('api', self.api_key),
+                                     data={
+                                         'from' : '{0} {1}'.format(
+                                             email_request.sender_name,
+                                             email_request.sender_email),
+                                         'to': email_request.recipient,
+                                         'subject': email_request.subject,
+                                         'text': email_request.text,
+                                         })
 
-        message_id = None
-        if request.status_code == 200:
+        except e:
+            logger.error("mailgun request failed %s" % e)
+            return False
+
+        if response.status_code == 200:
             return True
         else:
+            # response message returned as json
             logger.error("mailgun error memssage %s" %
-                         json.loads(request.text)["message"][1:-1])
+                         json.loads(response.text)["message"][1:-1])
             return False
 
 if __name__ == "__main__":
