@@ -18,10 +18,10 @@ secondary backup.
 **EmailRequest** class encapsulates required email information such as
 recipient, email subject, etc.
 
-**main.py** contains all the http handlers.
-
 A wrapper class **EmailClient** delivers emails, which tries to use
 mailgun first and falls back to mandrill upon failures.
+
+**main.py** contains all the http handlers including MainHandler, ComposeHandler, OutboxHandler and DeleteHandler.
 
 * Users have to first log in using email address, (gmail can be used as
 login credential).
@@ -63,7 +63,7 @@ Cookies are used when users want to edit an existing email.
   * Python. I have used python for different purposes, and it is
     really convient to write web apps in python.
 
-  * Webapp2. It is a recommended framework by google app engine.
+  * Webapp2. It is a recommended web framework for google app engine.
 
   * memcache. It is used to speed up home page render.
 
