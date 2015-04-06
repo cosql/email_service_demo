@@ -19,14 +19,14 @@ mailgun first and falls back to mandrill upon failures.
 
 * Users have to first log in using email address, (gmail can be used as
 login credential).
-* The top 10 most recent emails are shown on the homepage after
+* The most recent emails (up to 10) are shown on the homepage after
 login, memcache is used as a lookaside cache to cache these recent
 emails for each user.
 * Users can search emails by their subjects. (only exact match is
 supported due to the limitation of appengine ndb api)
 * Users can click 'compose' to write a new email to send or save for
 later use.
-* And users can use 'mail box' link to retrieve all the historical
+* And users can use 'outbox' link to retrieve all the historical
 emails, and are able to delete a selected email at a time.
 * Finally, users can also use 'drafts' link to see all the unsent emails
 and then edit/send one of them.
@@ -49,6 +49,8 @@ Cookies are used when users want to edit an existing email.
 ###Implement Details
 ####Front-end
   * All the templates in template directory are manually generated.
+  * Some javascript code in templates and js folder is used to do ajax request and change page view dynamically.
+  * Some style setting for table row focus, button effect, etc. in static folder.
 
 ####Back-end
 
