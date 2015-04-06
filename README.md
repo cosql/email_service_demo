@@ -14,8 +14,12 @@ Implemented a mail service to let user send/save/view/delete all their emails.
 A service running on google engine implemented using webapp2 framework.
 The service uses mailgun as default mailing service provider and mandrill as
 secondary backup.
+
 **EmailRequest** class encapsulates required email information such as
 recipient, email subject, etc.
+
+**main.py** contains all the http handlers.
+
 A wrapper class **EmailClient** delivers emails, which tries to use
 mailgun first and falls back to mandrill upon failures.
 
