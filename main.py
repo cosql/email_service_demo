@@ -62,7 +62,7 @@ class ComposeHandler(webapp2.RequestHandler):
             Email.status == False)
         email_context = None
         for e in emails:
-            # should be only one entry found
+            # should be at most one email entity found
             email_context = e
             self.response.set_cookie('msg_id', email_context.msg_id)
 
@@ -86,6 +86,7 @@ class ComposeHandler(webapp2.RequestHandler):
 
     # save email as draft
     def __save(self):
+        ''' save an email to ndb data store '''
         # parse requset
         self.__parse_request()
         if  len(self.subject) > 0 or len(self.text) > 0 or \
@@ -97,6 +98,7 @@ class ComposeHandler(webapp2.RequestHandler):
         return
 
     def __send(self):
+        ''' send an email then save it to ndb data store '''
         self.__parse_request()
         # new email request
         email_request = EmailRequest(
@@ -106,7 +108,7 @@ class ComposeHandler(webapp2.RequestHandler):
             subject=self.subject,
             text=self.text)
 
-        # validate email request
+        # validate email request (recipient address and subject length)
         valid, reason = email_request.validate()
         header = '<head>' + \
                 '<link rel=\"stylesheet\" \
@@ -120,6 +122,8 @@ class ComposeHandler(webapp2.RequestHandler):
                 reason)
             return
 
+        # send email using EmailClient, it defaults to Mailgun
+        # and falls back to Mandrill in case of failure
         cl = EmailClient()
         status = False
         try:
@@ -129,6 +133,7 @@ class ComposeHandler(webapp2.RequestHandler):
 
         self.__update_datastore(status)
 
+        # create result page to return
         if status:
             show_message = "Send succeeded"
         else:
@@ -138,7 +143,7 @@ class ComposeHandler(webapp2.RequestHandler):
             show_message)
 
     def __parse_request(self):
-        ''' parse user request'''
+        ''' parse user request from form submit'''
         self.sender_name = self.request.get('sender_name')
         self.sender_email = self.request.get('sender_email')
         self.subject = str(self.request.get('subject').encode('utf8'))
@@ -149,26 +154,26 @@ class ComposeHandler(webapp2.RequestHandler):
         self.msg_id = self.request.cookies.get('msg_id')
         self.response.delete_cookie('msg_id')
 
-        # check if there is an existing draft
+        # check if there is an existing draft with the same msg_id
         self.email = None
         if self.msg_id is not None:
             emails = Email.query(
                 Email.msg_id == str(self.msg_id),
                 Email.status == False)
             for e in emails:
-                # should be only one mail found
+                # should be at most email found
                 self.email = e
 
+        # no draft found, create a new email entity
         if self.email == None:
-            # send a new email
             self.email = Email()
 
     def __update_datastore(self, status=False):
+        '''update datastore upon send/save events'''
         # assign msg_id if not existing
         if self.msg_id == None:
+            # use uuid as a msg_id
             self.msg_id = str(uuid.uuid1())
-        else:
-            print self.msg_id
 
         self.email.sender = self.sender_name
         self.email.sender_email = self.sender_email
@@ -187,9 +192,11 @@ class ComposeHandler(webapp2.RequestHandler):
         memcache.flush_all()
 
 class OutboxHandler(webapp2.RequestHandler):
-    ''' handler for outbox view '''
+    ''' handler for outbox/drafts view '''
     def get(self):
+        # parse targeted emails, can be either 'all' or 'unsent'
         target = self.request.get('target')
+        # parse search keyword if any
         keyword = str(self.request.get('keyword').encode('utf8'))
         user_id = users.get_current_user().user_id()
         if len(keyword) == 0:
@@ -203,6 +210,7 @@ class OutboxHandler(webapp2.RequestHandler):
                                      Email.status == False).order(-Email.date)
 
         else:
+            # it's a search request
             # retrieve messages with certain subject $keyword
             emails = Email.query(Email.user_id == user_id,
                                  Email.subject == keyword).order(-Email.date)
@@ -215,6 +223,7 @@ class OutboxHandler(webapp2.RequestHandler):
 class DeleteHandler(webapp2.RequestHandler):
     ''' handler for message delete '''
     def post(self):
+        # delete request is sent as a post request
         email = Email.query(Email.msg_id == str(self.request.get('email_id')))
         if email is None:
             self.redirect('/outbox')
@@ -225,6 +234,7 @@ class DeleteHandler(webapp2.RequestHandler):
         time.sleep(1)
         memcache.delete(user_id)
         memcache.flush_all()
+        # JIC it's ajax request, no redirection here any more
         # self.redirect('/outbox')
 
 app = webapp2.WSGIApplication([
