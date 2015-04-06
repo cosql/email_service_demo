@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, '/usr/local/google_appengine')
 import dev_appserver
 dev_appserver.fix_sys_path()
+# fix django path
 sys.path.append(os.path.join("/usr/local/google_appengine",
                              'lib', 'django-1.3'))
 from django.template.loaders import filesystem
