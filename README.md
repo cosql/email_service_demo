@@ -15,11 +15,11 @@ A service running on google engine implemented using webapp2 framework.
 The service uses mailgun as default mailing service provider and mandrill as
 secondary backup.
 
-**EmailRequest** class encapsulates required email information such as
+**EmailRequest** class in **email_request.py** encapsulates required email information such as
 recipient, email subject, etc.
 
-A wrapper class **EmailClient** delivers emails, which tries to use
-mailgun first and falls back to mandrill upon failures.
+A wrapper class **EmailClient** in **email_request.py** delivers emails, which tries to use
+mailgun (implemented in **mailgun_client.py**) first and falls back to mandrill (implemented in **mandrill_client.py**) upon failures.
 
 **main.py** contains all the http handlers including MainHandler, ComposeHandler, OutboxHandler and DeleteHandler.
 
