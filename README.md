@@ -4,7 +4,9 @@ Email Service Demo - for the Uber coding challenge
 This is a demo for [Uber coding challenge] (https://github.com/uber/coding-challenge-tools/blob/master/coding_challenge.md#email-service).
 
 ###The requirements:
-Create a service that accepts the necessary information and sends emails. It should provide an abstraction between two different email service providers. If one of the services goes down, your service can quickly fail over to a different provider without affecting your customers.
+Create a service that accepts the necessary information and sends emails.
+* It should provide an abstraction between two different email service providers.
+* If one of the services goes down, your service can quickly fail over to a different provider without affecting your customers.
 
 
 ###The solution:
