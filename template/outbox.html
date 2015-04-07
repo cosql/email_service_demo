@@ -20,8 +20,8 @@
           <th>Subject</th>
           <th>Text</th>
           <th>Recipient</th>
-          <th>Time</th>
           <th>Status</th>
+          <th>Time</th>
           <th>Action</th>
           <th>Delete</th>
         </tr>
@@ -35,12 +35,12 @@
         {% else %}
         <td><i>anonymous</i></td>
         {% endif %}
-        <td><small>[<i><script type="text/javascript">localize('{{ email.date.ctime }}');</script></i>]</small></td>
         {% if email.status %}
         <td><i>sent</i></td>
         {% else %}
         <td><i>unsent</i></td>
         {% endif %}
+        <td><small>[<i><script type="text/javascript">localize('{{ email.date.ctime }}');</script></i>]</small></td>
         <td>
           <button class="btn btn-success" data-toggle="modal" data-target="#myModal">View</button>
         </td>
@@ -85,6 +85,7 @@
       var columnHeadings = $("thead th").map(function() {
       return $(this).text();
       }).get();
+      columnHeadings.pop();
       columnHeadings.pop();
       columnHeadings.pop();
       var email_id = $(this).parent().parent().attr('email_id');
