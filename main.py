@@ -12,6 +12,11 @@ from google.appengine.ext import ndb
 from google.appengine.ext.webapp.template import render
 
 from email_client import EmailRequest, EmailClient
+header = '<head>' + \
+         '<link rel=\"stylesheet\" \
+         href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css\">' + \
+         '<meta http-equiv="refresh" content="3;/" />' + \
+         '</head>'
 
 # email entity schema in data store
 class Email(ndb.Model):
@@ -94,7 +99,10 @@ class ComposeHandler(webapp2.RequestHandler):
             # we have some text to update
             self.__update_datastore()
 
-        self.redirect('/')
+        self.response.write(
+            header + '[<a href="/"><b>Back To Home</b></a>]<br><body><h2>%s</h2></body>' %
+            "Save succeeded")
+
         return
 
     def __send(self):
@@ -110,11 +118,6 @@ class ComposeHandler(webapp2.RequestHandler):
 
         # validate email request (recipient address and subject length)
         valid, reason = email_request.validate()
-        header = '<head>' + \
-                '<link rel=\"stylesheet\" \
-                href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css\">' + \
-                '<meta http-equiv="refresh" content="3;/" />' + \
-                '</head>'
         if (valid == False):
             self.response.write(
                 header + '[<a href="/"><b>Back To Home</b></a>]<br><body><h2>' +

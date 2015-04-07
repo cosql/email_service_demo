@@ -189,7 +189,7 @@ class TestApp(unittest.TestCase):
                  }
         response = testapp.post('/compose', params)
         # check the status code, redirect to home
-        self.assertEqual(302, response.status_code)
+        self.assertEqual(200, response.status_code)
 
         emails = Email.query(Email.user_id == "123456",
                              Email.status == False).fetch()
@@ -259,7 +259,7 @@ class TestApp(unittest.TestCase):
                  }
         response = testapp.post('/compose', params)
         # check the status code, redirect to home
-        self.assertEqual(302, response.status_code)
+        self.assertEqual(200, response.status_code)
 
         testapp = webtest.TestApp(self.deleteApp)
         emails = Email.query(Email.user_id == "123456",
@@ -291,7 +291,7 @@ class TestApp(unittest.TestCase):
                  }
         response = testapp.post('/compose', params)
         # check the status code, redirect to home
-        self.assertEqual(302, response.status_code)
+        self.assertEqual(200, response.status_code)
         # get the unsent email id in data store
         unsentEmailID = Email.query(Email.user_id == "123456",
                                     Email.status == False).fetch()[0].msg_id
